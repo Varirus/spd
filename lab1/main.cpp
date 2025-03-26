@@ -32,8 +32,8 @@ vector<Job> sort_by_q(vector<Job> jobs) {
     return jobs;
 }
 
-// Sort by q value
-int objective_function_calc(vector<Job> jobs) {
+// Compute makespan using r and p
+int compute_makespan_rp(vector<Job> jobs) {
     int C_prev = 0;
     int C_act = 0;
     bool prime = true;
@@ -43,6 +43,24 @@ int objective_function_calc(vector<Job> jobs) {
             C_prev = job.r + job.p;
         else{
             C_act = max(C_prev, job.r) + job.p;
+            C_prev = C_act;
+        }
+            
+        prime = false;
+    }
+    return C_act;
+}
+// Compute makespan using r and p and q
+int compute_makespan_rpq(vector<Job> jobs) {
+    int C_prev = 0;
+    int C_act = 0;
+    bool prime = true;
+    for (auto job : jobs)
+    {
+        if(prime)
+            C_prev = job.r + job.p + job.q;
+        else{
+            C_act = max(C_prev, job.r) + job.p + job.q;
             C_prev = C_act;
         }
             
@@ -98,8 +116,11 @@ int main(int argc, char* argv[]) {
         jobs.push_back({id, r, p, q});
     }
    
-    vector<Job> best_permutation = jobs;
-    int best_value = 0;
+    vector<Job> best_permutation_rp = jobs;
+    int best_value_rp = 0;
+
+    vector<Job> best_permutation_rpq = jobs;
+    int best_value_rpq = 0;
    
     printf("Nie posortowane\n");
     for (auto job : jobs)
@@ -107,22 +128,26 @@ int main(int argc, char* argv[]) {
         printf("%d %d %d %d\n", job.id, job.r, job.p, job.q);
         
     }
-    printf("C_act: %d\n", objective_function_calc(jobs));
+    printf("Makespan rp: %d\n", compute_makespan_rp(jobs));
+    printf("Makespan rpq: %d\n\n", compute_makespan_rpq(jobs));
     vector<Job> sort_r = sort_by_r(jobs);
     printf("Sortowane po r\n");
     for (auto job : sort_r)
     {
         printf("%d %d %d %d\n",job.id, job.r, job.p, job.q);
     }
-    printf("C_act: %d\n", objective_function_calc(sort_r));
+    printf("Makespan rp: %d\n", compute_makespan_rp(sort_r));
+    printf("Makespan rpq: %d\n\n",compute_makespan_rpq(sort_r));
     vector<Job> sort_q = sort_by_q(jobs);
     printf("Sortowane po q\n");
     for (auto job : sort_q)
     {
         printf("%d %d %d %d\n", job.id, job.r, job.p, job.q);
     }
-    printf("C_act: %d\n", objective_function_calc(sort_q));
+    printf("Makespan rp: %d\n", compute_makespan_rp(sort_q));
+    printf("Makespan rpq: %d\n\n", compute_makespan_rpq(sort_q));
     // Permutations
+    printf("Factorial z %d to %d\n\n", amount, fact(amount));
     for (int i = 0; i < fact(amount); i++)
     {
         next_permutation(jobs.begin(), jobs.end(), [](const Job& a, const Job& b) {
@@ -133,16 +158,29 @@ int main(int argc, char* argv[]) {
         {
             printf("%d %d %d %d\n", job.id, job.r, job.p, job.q);
         }*/
-        int value = objective_function_calc(jobs);
-        if(value > best_value){
-            best_value = value;
-            best_permutation = jobs;
+        int value = compute_makespan_rp(jobs);
+        if(value > best_value_rp){
+            best_value_rp = value;
+            best_permutation_rp = jobs;
+        }
+        value = compute_makespan_rpq(jobs);
+        if(value > best_value_rpq){
+            best_value_rpq = value;
+            best_permutation_rpq = jobs;
         }
     }
-    printf("Najlepsze z permutacji\n");
-    for (auto job : best_permutation)
+    printf("Best Permutation rp\n");
+    for (auto job : best_permutation_rp)
     {
         printf("%d %d %d %d\n", job.id, job.r, job.p, job.q);
     }
-    printf("C_act: %d\n", best_value);
+    printf("Makespan rp: %d\n", best_value_rpq);
+    printf("Makespan rpq: %d\n\n", compute_makespan_rpq(best_permutation_rp));
+    printf("Best Permutation rpq\n");
+    for (auto job : best_permutation_rpq)
+    {
+        printf("%d %d %d %d\n", job.id, job.r, job.p, job.q);
+    }
+    printf("Makespan rp: %d\n", compute_makespan_rp(best_permutation_rpq));
+    printf("Makespan rpq: %d\n\n", best_value_rpq);
 }
