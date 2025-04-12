@@ -10,7 +10,7 @@ include_directories(include)
 # Source files
 set(SOURCES
     src/main.cpp
-    src/Job.cpp
+    src/Structs.cpp
     src/Comparators.cpp
     src/Algorithms.cpp
     src/Utilities.cpp

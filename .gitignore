@@ -35,6 +35,8 @@
 *.out
 *.app
 
+lab1/build/
+
 *.DAT:Zone.Identifier
 
 # End of https://www.toptal.com/developers/gitignore/api/c++

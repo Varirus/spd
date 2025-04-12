@@ -1,7 +1,7 @@
 #ifndef COMPARATORS_H
 #define COMPARATORS_H
 
-#include "Job.h"
+#include "Structs.h"
 
 struct CompareQ
 {
@@ -23,4 +23,4 @@ struct CompareR_Rev
     bool operator()(const Job &a, const Job &b);
 };
 
-#endif // COMPARATORS_H
+#endif

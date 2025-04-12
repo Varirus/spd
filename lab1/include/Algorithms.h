@@ -2,11 +2,12 @@
 #define ALGORITHMS_H
 
 #include <vector>
-#include "Job.h"
+#include "Structs.h"
+#include <limits.h>
 
-void bruteForce(std::vector<Job> jobs, std::vector<Job> &best_permutation_rp, 
-               std::vector<Job> &best_permutation_rpq);
-void schrage(std::vector<Job> jobs, std::vector<Job> &best_permutation, int &C_max);
-void preemptiveSchrage(std::vector<Job> jobs, std::vector<Job> &best_permutation, int &C_max);
+std::pair<Result, Result> bruteForce(std::vector<Job> jobs);
+Result schrage(std::vector<Job> jobs);
+Result preemptiveSchrage(std::vector<Job> jobs);
+Result carlier(std::vector<Job> jobs, int UB = INT_MAX);
 
-#endif // ALGORITHMS_H
+#endif

@@ -1,5 +1,5 @@
 #include "Comparators.h"
-#include "Job.h"
+#include "Structs.h"
 
 bool CompareQ::operator()(const Job &a, const Job &b)
 {

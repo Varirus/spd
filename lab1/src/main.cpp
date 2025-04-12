@@ -1,45 +1,78 @@
 #include <iostream>
 #include <vector>
-#include "Job.h"
+#include "Structs.h"
 #include "Algorithms.h"
 #include "Utilities.h"
+#include <chrono>
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
     vector<Job> jobs = readInput(argc, argv);
-    vector<Job> best_permutation_rp;
-    vector<Job> best_permutation_rpq;
-    vector<Job> schrage_permutation;
-    vector<Job> preemptiveSchrage_permutation;
 
     printf("------------------------------\n");
     printf("Input:\n");
     print_Jobs(jobs);
 
-    /*printf("Sortowane po r\n");
-    vector<Job> sort_r = sort_by_r(jobs);
-    print_Jobs(sort_r);
-
-    printf("Sortowane po q\n");
-    vector<Job> sort_q = sort_by_q(jobs);
-    print_Jobs(sort_q);*/
     printf("------------------------------\n");
+
     printf("Schrage:\n");
-    int C_max_schrage;
-    schrage(jobs, schrage_permutation, C_max_schrage);
+    auto start = std::chrono::high_resolution_clock::now();
+    Result schrage_result = schrage(jobs);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    printf("Time: %ldns\n", duration.count());
+    printf("C_max: %d\n", schrage_result.C_max);
+    printf("Schedule:\n");
+    print_Jobs(schrage_result.permutation);
 
     printf("------------------------------\n");
-    printf("Preemptive Schrage:\n");
-    int C_max_preemptiveSchrage;
-    preemptiveSchrage(jobs, preemptiveSchrage_permutation, C_max_preemptiveSchrage);
 
+    printf("Preemptive Schrage:\n");
+    start = std::chrono::high_resolution_clock::now();
+    Result preemptiveSchrage_result = preemptiveSchrage(jobs);
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    printf("Time: %ldns\n", duration.count());
+    printf("C_max: %d\n", preemptiveSchrage_result.C_max);
+    printf("Schedule:\n");
+    print_Jobs(preemptiveSchrage_result.permutation);
+    
     if (jobs.size() < 11)
     {
         printf("------------------------------\n");
         printf("Brute Force:\n");
-        bruteForce(jobs, best_permutation_rp, best_permutation_rpq);
+        printf("------------------------------\n");
+
+        start = std::chrono::high_resolution_clock::now();
+        std::pair<Result, Result> bruteForce_result = bruteForce(jobs);
+        end = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+        printf("Brute Force RP:\n");
+        printf("Time: %ldns\n", duration.count());
+        printf("C_max: %d\n", bruteForce_result.first.C_max);
+        printf("Schedule:\n");
+        print_Jobs(bruteForce_result.first.permutation);
+        printf("------------------------------\n");
+        printf("Brute Force RPQ:\n");
+        printf("Time: %ldns\n", duration.count());
+        printf("C_max: %d\n", bruteForce_result.second.C_max);
+        printf("Schedule:\n");
+        print_Jobs(bruteForce_result.second.permutation);
     }
+
+    printf("------------------------------\n");
+
+    printf("Carlier:\n");
+    start = std::chrono::high_resolution_clock::now();
+    Result carlier_result = carlier(jobs);
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    printf("Time: %ldns\n", duration.count());
+    printf("C_max: %d\n", carlier_result.C_max);
+    printf("Schedule:\n");
+    print_Jobs(carlier_result.permutation);
+
     printf("------------------------------\n");
 }
