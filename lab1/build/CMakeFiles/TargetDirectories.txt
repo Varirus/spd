@@ -1,0 +1,3 @@
+/home/varirus/spd/lab1/build/CMakeFiles/scheduling_algorithms.dir
+/home/varirus/spd/lab1/build/CMakeFiles/edit_cache.dir
+/home/varirus/spd/lab1/build/CMakeFiles/rebuild_cache.dir

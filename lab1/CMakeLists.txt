@@ -1,5 +1,20 @@
-cmake_minimum_required(VERSION 3.10.0)
-project(intro VERSION 0.1.0 LANGUAGES C CXX)
+cmake_minimum_required(VERSION 3.10)
+project(SchedulingAlgorithms)
 
-add_executable(main main.cpp)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Include directories
+include_directories(include)
+
+# Source files
+set(SOURCES
+    src/main.cpp
+    src/Job.cpp
+    src/Comparators.cpp
+    src/Algorithms.cpp
+    src/Utilities.cpp
+)
+
+# Executable
+add_executable(scheduling_algorithms ${SOURCES})
