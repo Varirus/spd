@@ -9,8 +9,6 @@
 
 using namespace std;
 
-bool debugLog = false;
-
 vector<Job> readInput(int argc, char *argv[])
 {
     if (argc < 2)

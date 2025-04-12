@@ -83,19 +83,19 @@ CMakeFiles/scheduling_algorithms.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/scheduling_algorithms.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/varirus/spd/lab1/src/main.cpp -o CMakeFiles/scheduling_algorithms.dir/src/main.cpp.s
 
-CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o: CMakeFiles/scheduling_algorithms.dir/flags.make
-CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o: /home/varirus/spd/lab1/src/Job.cpp
-CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o: CMakeFiles/scheduling_algorithms.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/varirus/spd/lab1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o -MF CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o.d -o CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o -c /home/varirus/spd/lab1/src/Job.cpp
+CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o: CMakeFiles/scheduling_algorithms.dir/flags.make
+CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o: /home/varirus/spd/lab1/src/Structs.cpp
+CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o: CMakeFiles/scheduling_algorithms.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/varirus/spd/lab1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o -MF CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o.d -o CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o -c /home/varirus/spd/lab1/src/Structs.cpp
 
-CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/varirus/spd/lab1/src/Job.cpp > CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.i
+CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/varirus/spd/lab1/src/Structs.cpp > CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.i
 
-CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/varirus/spd/lab1/src/Job.cpp -o CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.s
+CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/varirus/spd/lab1/src/Structs.cpp -o CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.s
 
 CMakeFiles/scheduling_algorithms.dir/src/Comparators.cpp.o: CMakeFiles/scheduling_algorithms.dir/flags.make
 CMakeFiles/scheduling_algorithms.dir/src/Comparators.cpp.o: /home/varirus/spd/lab1/src/Comparators.cpp
@@ -142,7 +142,7 @@ CMakeFiles/scheduling_algorithms.dir/src/Utilities.cpp.s: cmake_force
 # Object files for target scheduling_algorithms
 scheduling_algorithms_OBJECTS = \
 "CMakeFiles/scheduling_algorithms.dir/src/main.cpp.o" \
-"CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o" \
+"CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o" \
 "CMakeFiles/scheduling_algorithms.dir/src/Comparators.cpp.o" \
 "CMakeFiles/scheduling_algorithms.dir/src/Algorithms.cpp.o" \
 "CMakeFiles/scheduling_algorithms.dir/src/Utilities.cpp.o"
@@ -151,7 +151,7 @@ scheduling_algorithms_OBJECTS = \
 scheduling_algorithms_EXTERNAL_OBJECTS =
 
 scheduling_algorithms: CMakeFiles/scheduling_algorithms.dir/src/main.cpp.o
-scheduling_algorithms: CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o
+scheduling_algorithms: CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o
 scheduling_algorithms: CMakeFiles/scheduling_algorithms.dir/src/Comparators.cpp.o
 scheduling_algorithms: CMakeFiles/scheduling_algorithms.dir/src/Algorithms.cpp.o
 scheduling_algorithms: CMakeFiles/scheduling_algorithms.dir/src/Utilities.cpp.o

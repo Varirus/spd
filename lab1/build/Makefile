@@ -177,29 +177,29 @@ src/Comparators.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/scheduling_algorithms.dir/build.make CMakeFiles/scheduling_algorithms.dir/src/Comparators.cpp.s
 .PHONY : src/Comparators.cpp.s
 
-src/Job.o: src/Job.cpp.o
-.PHONY : src/Job.o
+src/Structs.o: src/Structs.cpp.o
+.PHONY : src/Structs.o
 
 # target to build an object file
-src/Job.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/scheduling_algorithms.dir/build.make CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o
-.PHONY : src/Job.cpp.o
+src/Structs.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/scheduling_algorithms.dir/build.make CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o
+.PHONY : src/Structs.cpp.o
 
-src/Job.i: src/Job.cpp.i
-.PHONY : src/Job.i
+src/Structs.i: src/Structs.cpp.i
+.PHONY : src/Structs.i
 
 # target to preprocess a source file
-src/Job.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/scheduling_algorithms.dir/build.make CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.i
-.PHONY : src/Job.cpp.i
+src/Structs.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/scheduling_algorithms.dir/build.make CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.i
+.PHONY : src/Structs.cpp.i
 
-src/Job.s: src/Job.cpp.s
-.PHONY : src/Job.s
+src/Structs.s: src/Structs.cpp.s
+.PHONY : src/Structs.s
 
 # target to generate assembly for a file
-src/Job.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/scheduling_algorithms.dir/build.make CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.s
-.PHONY : src/Job.cpp.s
+src/Structs.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/scheduling_algorithms.dir/build.make CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.s
+.PHONY : src/Structs.cpp.s
 
 src/Utilities.o: src/Utilities.cpp.o
 .PHONY : src/Utilities.o
@@ -264,9 +264,9 @@ help:
 	@echo "... src/Comparators.o"
 	@echo "... src/Comparators.i"
 	@echo "... src/Comparators.s"
-	@echo "... src/Job.o"
-	@echo "... src/Job.i"
-	@echo "... src/Job.s"
+	@echo "... src/Structs.o"
+	@echo "... src/Structs.i"
+	@echo "... src/Structs.s"
 	@echo "... src/Utilities.o"
 	@echo "... src/Utilities.i"
 	@echo "... src/Utilities.s"

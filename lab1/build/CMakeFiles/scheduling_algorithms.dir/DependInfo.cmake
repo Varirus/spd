@@ -10,7 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/varirus/spd/lab1/src/Algorithms.cpp" "CMakeFiles/scheduling_algorithms.dir/src/Algorithms.cpp.o" "gcc" "CMakeFiles/scheduling_algorithms.dir/src/Algorithms.cpp.o.d"
   "/home/varirus/spd/lab1/src/Comparators.cpp" "CMakeFiles/scheduling_algorithms.dir/src/Comparators.cpp.o" "gcc" "CMakeFiles/scheduling_algorithms.dir/src/Comparators.cpp.o.d"
-  "/home/varirus/spd/lab1/src/Job.cpp" "CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o" "gcc" "CMakeFiles/scheduling_algorithms.dir/src/Job.cpp.o.d"
+  "/home/varirus/spd/lab1/src/Structs.cpp" "CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o" "gcc" "CMakeFiles/scheduling_algorithms.dir/src/Structs.cpp.o.d"
   "/home/varirus/spd/lab1/src/Utilities.cpp" "CMakeFiles/scheduling_algorithms.dir/src/Utilities.cpp.o" "gcc" "CMakeFiles/scheduling_algorithms.dir/src/Utilities.cpp.o.d"
   "/home/varirus/spd/lab1/src/main.cpp" "CMakeFiles/scheduling_algorithms.dir/src/main.cpp.o" "gcc" "CMakeFiles/scheduling_algorithms.dir/src/main.cpp.o.d"
   )
