@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/varirus/spd/lab1",
-      "program": "/home/varirus/spd/lab1/build/Debug/outDebug",
+      "cwd": "/home/varirus/spd/lab1/src",
+      "program": "/home/varirus/spd/lab1/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

@@ -146,9 +146,6 @@ Result preemptiveSchrage(vector<Job> jobs)
         }
     }
     return best_result;
-    //printf("Czas wykonania: %d.%.3dus\n\n", (int)duration.count() / 1000, (int)duration.count() % 1000);
-    //print_Jobs(best_permutation);
-    //printf("C_max: %d\n\n", C_max);
 }
 
 Result carlier(vector<Job> jobs, int UB) {
