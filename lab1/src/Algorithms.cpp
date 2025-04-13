@@ -148,53 +148,120 @@ Result preemptiveSchrage(vector<Job> jobs)
     return best_result;
 }
 
-Result carlier(vector<Job> jobs, int UB) {
-    Result best_result;
-    best_result.C_max = UB;
+Result ownAlgorithm(vector<Job> jobs) {
+    Result result;
+    result.C_max = 0;
 
-    // 1. Oblicz Schrage (górne ograniczenie)
-    Result schrage_result = schrage(jobs);
+    priority_queue<Job, vector<Job>, CompareR> priorityJobsN(jobs.begin(), jobs.end());
+    priority_queue<Job, vector<Job>, ComparePPlusQ> priorityJobsG;
 
-    if (schrage_result.C_max < best_result.C_max) {
-        best_result.permutation = schrage_result.permutation;
-        best_result.C_max = schrage_result.C_max;
-        UB = schrage_result.C_max;
+    int t = 0;
+    Job current;
+    bool hasCurrent = false;
+
+    while (!priorityJobsN.empty() || !priorityJobsG.empty() || hasCurrent) {
+        // Move jobs from N to G where r <= t
+        while (!priorityJobsN.empty() && priorityJobsN.top().r <= t) {
+            priorityJobsG.push(priorityJobsN.top());
+            priorityJobsN.pop();
+        }
+
+        if (hasCurrent) {
+            // Process current job for (p-1) units
+            int timeToProcess = current.p - 1;
+            t += timeToProcess;
+            current.p -= timeToProcess; // Remaining p is 1
+
+            // Move new jobs from N to G
+            while (!priorityJobsN.empty() && priorityJobsN.top().r <= t) {
+                priorityJobsG.push(priorityJobsN.top());
+                priorityJobsN.pop();
+            }
+
+            // Check if any job in G has (p + q) < (current.p + current.q)
+            bool preempt = false;
+            if (!priorityJobsG.empty()) {
+                Job topJob = priorityJobsG.top();
+                if ((topJob.p + topJob.q) < (current.p + current.q)) {
+                    preempt = true;
+                }
+            }
+
+            if (preempt) {
+                priorityJobsG.push(current);
+                current = priorityJobsG.top();
+                priorityJobsG.pop();
+                // Continue processing the new current job
+            } else {
+                // Process remaining 1 unit
+                t += 1;
+                current.p -= 1; // p becomes 0
+                result.C_max = max(result.C_max, t + current.q);
+                // Add to permutation if needed
+                result.permutation.push_back(current);
+                hasCurrent = false;
+            }
+        } else if (!priorityJobsG.empty()) {
+            // Select job with smallest p + q
+            current = priorityJobsG.top();
+            priorityJobsG.pop();
+            hasCurrent = true;
+        } else {
+            // Jump to the next release time
+            if (!priorityJobsN.empty()) {
+                t = priorityJobsN.top().r;
+            } else {
+                // All jobs are processed
+                break;
+            }
+        }
     }
 
-    // 2. Oblicz Schrage z przerwaniami (dolne ograniczenie)
-    Result preemptiveSchrage_result = preemptiveSchrage(jobs);
-    int LB = preemptiveSchrage_result.C_max;
+    return result;
+}
 
-    // 3. Warunek stopu
+Result carlier(std::vector<Job> jobs, int UB) {
+    Result best_result = schrage(jobs);
+    int original_UB = UB;
+    if (best_result.C_max < UB) {
+        UB = best_result.C_max;
+    }
+
+    // Oblicz LB dla aktualnej instancji
+    Result pmtn_result = preemptiveSchrage(jobs);
+    int LB = pmtn_result.C_max;
+
+    // Warunek stopu
     if (LB >= UB) {
         return best_result;
     }
 
-    // 4. Znajdź ścieżkę krytyczną
+    // Znajdź ścieżkę krytyczną (a, b, c)
+    const auto& perm = best_result.permutation;
+    int C_max = best_result.C_max;
     int b = -1, a = -1, c = -1;
-    int C_max = schrage_result.C_max;
 
-    // Znajdź b
-    for (int i = schrage_result.permutation.size() - 1; i >= 0; --i) {
-        if (schrage_result.permutation[i].r + schrage_result.permutation[i].p + schrage_result.permutation[i].q == C_max) {
+    // Znajdź b (ostatnie zadanie na ścieżce)
+    for (int i = perm.size() - 1; i >= 0; --i) {
+        if (perm[i].r + perm[i].p + perm[i].q == C_max) {
             b = i;
             break;
         }
     }
 
-    // Znajdź a
+    // Znajdź a (pierwsze zadanie na ścieżce)
     int sum_p = 0;
     for (int i = b; i >= 0; --i) {
-        sum_p += schrage_result.permutation[i].p;
-        if (schrage_result.permutation[i].r + sum_p + schrage_result.permutation[b].q == C_max) {
+        sum_p += perm[i].p;
+        if (perm[i].r + sum_p + perm[b].q == C_max) {
             a = i;
             break;
         }
     }
 
-    // Znajdź c
+    // Znajdź c (pierwsze zadanie w [a, b] z q < q[b])
     for (int i = a; i <= b; ++i) {
-        if (schrage_result.permutation[i].q < schrage_result.permutation[b].q) {
+        if (perm[i].q < perm[b].q) {
             c = i;
             break;
         }
@@ -204,46 +271,49 @@ Result carlier(vector<Job> jobs, int UB) {
         return best_result;
     }
 
-    // 5. Oblicz parametry dla podzbioru K
-    vector<Job> K;
+    // Znajdź oryginalny indeks zadania c
+    int original_c_id = perm[c].id;
+
+    // Oblicz parametry podzbioru K = {c+1, ..., b}
+    int r_K = INT_MAX, q_K = INT_MAX, p_K = 0;
     for (int i = c + 1; i <= b; ++i) {
-        K.push_back(schrage_result.permutation[i]);
+        r_K = std::min(r_K, perm[i].r);
+        q_K = std::min(q_K, perm[i].q);
+        p_K += perm[i].p;
     }
 
-    int r_p = INT_MAX, q_p = INT_MAX, p_p = 0;
-    for (const auto& job : K) {
-        r_p = min(r_p, job.r);
-        q_p = min(q_p, job.q);
-        p_p += job.p;
-    }
-
-    // 6. Rekurencja - lewe dziecko
-    int original_r = jobs[c].r;
-    jobs[c].r = max(jobs[c].r, r_p + p_p);
-    int LB_left = r_p + p_p + q_p;
+    // Lewe dziecko: modyfikuj r[c]
+    Job original_job = jobs[original_c_id];
+    jobs[original_c_id].r = std::max(jobs[original_c_id].r, r_K + p_K);
+    
+    // Przelicz LB dla lewej gałęzi
+    Result pmtn_left = preemptiveSchrage(jobs);
+    int LB_left = pmtn_left.C_max;
     
     if (LB_left < UB) {
         Result left_result = carlier(jobs, UB);
         if (left_result.C_max < best_result.C_max) {
             best_result = left_result;
-            UB = left_result.C_max;
+            UB = best_result.C_max;
         }
     }
-    jobs[c].r = original_r; // Cofnij zmianę
+    jobs[original_c_id].r = original_job.r; // Cofnij zmianę
 
-    // 7. Rekurencja - prawe dziecko
-    int original_q = jobs[c].q;
-    jobs[c].q = max(jobs[c].q, q_p + p_p);
-    int LB_right = r_p + p_p + q_p;
+    // Prawe dziecko: modyfikuj q[c]
+    jobs[original_c_id].q = std::max(jobs[original_c_id].q, q_K + p_K);
+    
+    // Przelicz LB dla prawej gałęzi
+    Result pmtn_right = preemptiveSchrage(jobs);
+    int LB_right = pmtn_right.C_max;
     
     if (LB_right < UB) {
         Result right_result = carlier(jobs, UB);
         if (right_result.C_max < best_result.C_max) {
             best_result = right_result;
-            UB = right_result.C_max;
+            UB = best_result.C_max;
         }
     }
-    jobs[c].q = original_q; // Cofnij zmianę
+    jobs[original_c_id].q = original_job.q; // Cofnij zmianę
 
     return best_result;
 }

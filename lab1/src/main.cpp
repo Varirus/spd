@@ -75,4 +75,16 @@ int main(int argc, char *argv[])
     print_Jobs(carlier_result.permutation);
 
     printf("------------------------------\n");
+
+    printf("Own Algorithm:\n");
+    start = std::chrono::high_resolution_clock::now();
+    Result ownAlgorithm_result = ownAlgorithm(jobs);
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    printf("Time: %ldns\n", duration.count());
+    printf("C_max: %d\n", ownAlgorithm_result.C_max);
+    printf("Schedule:\n");
+    print_Jobs(ownAlgorithm_result.permutation);
+
+    printf("------------------------------\n");
 }

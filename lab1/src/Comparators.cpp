@@ -20,3 +20,7 @@ bool CompareR_Rev::operator()(const Job &a, const Job &b)
 {
     return a.r > b.r;
 }
+
+bool ComparePPlusQ::operator()(const Job& a, const Job& b) {
+    return (a.p + a.q) > (b.p + b.q);
+}

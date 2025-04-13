@@ -23,4 +23,8 @@ struct CompareR_Rev
     bool operator()(const Job &a, const Job &b);
 };
 
+struct ComparePPlusQ {
+    bool operator()(const Job& a, const Job& b);
+};
+
 #endif
