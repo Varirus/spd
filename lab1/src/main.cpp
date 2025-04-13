@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         preemptiveSchrage_time += duration.count();
         printf("C_max: %d\n", preemptiveSchrage_result.C_max);
         printf("Schedule:\n");
-        print_Jobs(preemptiveSchrage_result.permutation);
+        //print_Jobs(preemptiveSchrage_result.permutation);
         
         if (jobs.size() < 11)
         {
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
             printf("Time: %ldns\n", duration.count());
             printf("C_max: %d\n", bruteForce_result.first.C_max);
             printf("Schedule:\n");
-            print_Jobs(bruteForce_result.first.permutation);
+            //print_Jobs(bruteForce_result.first.permutation);
             printf("------------------------------\n");
             printf("Brute Force RPQ:\n");
             printf("Time: %ldns\n", duration.count());
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
         printf("Carlier:\n");
         start = std::chrono::high_resolution_clock::now();
-        Result carlier_result = carlier(jobs);
+        Result carlier_result = solveCarlier(jobs);
         end = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
         printf("Time: %ldns\n", duration.count());

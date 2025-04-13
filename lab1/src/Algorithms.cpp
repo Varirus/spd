@@ -294,131 +294,115 @@ Result ownAlgorithm2(vector<Job> jobs)
     return best_result;
 }
 
-Result carlier(std::vector<Job> jobs, int UB) {
+void carlier(vector<Job>& jobs, Result& best_result) {
     
-    // UB
-    Result best_result = schrage(jobs);
-    if (best_result.C_max < UB)
-        UB = best_result.C_max;
-    std::cout << "UB: " << UB << std::endl;
-
-    /*// LB
-    Result pmtn_result = preemptiveSchrage(jobs);
-    int LB = pmtn_result.C_max;
-
-    std::cout << "LB: " << LB << std::endl;
-
-    // Check if we have a valid permutation
-    if (best_result.permutation.empty()) {
-        return best_result;
+    Result current_result = schrage(jobs);
+    
+    if (current_result.C_max < best_result.C_max) {
+        best_result = current_result;
     }
+    vector<Job>& perm = current_result.permutation;
 
-    // Stop
-    if (LB >= UB) {
-        return best_result;
-    }*/
-
-    // Critical Path
-    vector<Job> perm = best_result.permutation;
-    int C_max = best_result.C_max;
-    int b = -1, a = -1, c = -1;
-
-    vector<int> perm_completationTimes(perm.size());
-    vector<int> perm_startTimes(perm.size());
+    // Creating completion times vector
+    vector<int> completion_times(perm.size());
+    vector<int> start_times(perm.size());
     int t = 0;
     for (int i = 0; i < perm.size(); i++) {
-        perm_startTimes[i] = max(t, perm[i].r);
-        perm_completationTimes[i] = perm_startTimes[i] + perm[i].p;
-        t = perm_completationTimes[i];
+        start_times[i] = max(t, perm[i].r);
+        completion_times[i] = start_times[i] + perm[i].p;
+        t = completion_times[i];
     }
-    
     // Find b
+    int b = -1;
+    int C_max = current_result.C_max;
     for (int i = perm.size() - 1; i >= 0; i--) {
-        if (perm_completationTimes[i] + perm[i].q == C_max) {
+        if (completion_times[i] + perm[i].q == C_max) {
             b = i;
             break;
         }
     }
-    //std::cout << "b: " << b << std::endl;
-    // Znajdź a (pierwsze zadanie na ścieżce)
-    int sum = 0;
+
+    // Find a
+    int a = -1;
     for (int i = 0; i <= b; i++) {
-        int sum = 0;
-        for (int s = i; s <= b; s++) {
-            sum += perm[s].p;
+        int sum_p = 0;
+        for (int j = i; j <= b; j++) {
+            sum_p += perm[j].p;
         }
-        if (perm[i].r + sum + perm[b].q == C_max) {
+        if (perm[i].r + sum_p + perm[b].q == C_max) {
             a = i;
             break;
         }
     }
-    //std::cout << "a: " << a << std::endl;
-    // Znajdź c (pierwsze zadanie w [a, b] z q < q[b])
+
+    // Find c
+    int c = -1;
     for (int i = b; i >= a; i--) {
         if (perm[i].q < perm[b].q) {
             c = i;
             break;
         }
     }
-    std::cout << "c: " << c << std::endl;
-    // Check if c was found
+    // Find c
     if (c == -1)
-        return best_result;
+        return;
 
-    // Znajdź oryginalny indeks zadania c
-    int original_c_id = perm[c].id;
-
-    // Oblicz parametry podzbioru K = {c+1, ..., b}
+    // K parameters, h_K and h_Kc
     int r_K = INT_MAX, q_K = INT_MAX, p_K = 0;
     for (int i = c + 1; i <= b; i++) {
-        r_K = std::min(r_K, perm[i].r);
-        q_K = std::min(q_K, perm[i].q);
+        r_K = min(r_K, perm[i].r);
+        q_K = min(q_K, perm[i].q);
         p_K += perm[i].p;
     }
-    int h_K = r_K + q_K + p_K;
+    int h_K = r_K + p_K + q_K;
 
-    // Oblicz parametry podzbioru Kc = {c, ..., b}
     int r_Kc = INT_MAX, q_Kc = INT_MAX, p_Kc = 0;
     for (int i = c; i <= b; i++) {
-        r_Kc = std::min(r_Kc, perm[i].r);
-        q_Kc = std::min(q_Kc, perm[i].q);
+        r_Kc = min(r_Kc, perm[i].r);
+        q_Kc = min(q_Kc, perm[i].q);
         p_Kc += perm[i].p;
     }
-    int h_Kc = r_Kc + q_Kc + p_Kc;
+    int h_Kc = r_Kc + p_Kc + q_Kc;
 
-    // Lewe dziecko: modyfikuj r[c]
-    Job original_job = jobs[original_c_id];
-    jobs[original_c_id].r = std::max(jobs[original_c_id].r, r_K + p_K);
-    
-    // Przelicz LB dla lewej gałęzi
+    // Finding job by id
+    int job_id = perm[c].id;
+    Job& jc = *std::find_if(jobs.begin(), jobs.end(), [&](const Job& j) { return j.id == job_id; });
+
+    // Left - modify r
+    int original_r = jc.r;
+    jc.r = max(jc.r, r_K + p_K);
+
     Result pmtn_left = preemptiveSchrage(jobs);
-    int LB_left = max(h_K, max(h_Kc, pmtn_left.C_max));
-    
-    if (LB_left < UB) {
-        Result left_result = carlier(jobs, UB);
-        if (left_result.C_max < best_result.C_max) {
-            best_result = left_result;
-            UB = best_result.C_max;
-        }
-    }
-    std::cout << "pizda oko: " << c << std::endl;
-    jobs[original_c_id].r = original_job.r; // Cofnij zmianę
+    int LB_left = max({h_K, h_Kc, pmtn_left.C_max});
 
-    // Prawe dziecko: modyfikuj q[c]
-    jobs[original_c_id].q = std::max(jobs[original_c_id].q, q_K + p_K);
-    
-    // Przelicz LB dla prawej gałęzi
+    if (LB_left < best_result.C_max) {
+        carlier(jobs, best_result);
+    }
+
+    // Revert r
+    jc.r = original_r;
+
+    // Right - modify q
+    int original_q = jc.q;
+    jc.q = max(jc.q, q_K + p_K);
+
     Result pmtn_right = preemptiveSchrage(jobs);
-    int LB_right = max(h_K, max(h_Kc, pmtn_right.C_max));
-    
-    if (LB_right < UB) {
-        Result right_result = carlier(jobs, UB);
-        if (right_result.C_max < best_result.C_max) {
-            best_result = right_result;
-            UB = best_result.C_max;
-        }
-    }
-    jobs[original_c_id].q = original_job.q; // Cofnij zmianę
+    int LB_right = max({h_K, h_Kc, pmtn_right.C_max});
 
+    if (LB_right < best_result.C_max) {
+        carlier(jobs, best_result);
+    }
+
+    // Revert q
+    jc.q = original_q;
+}
+
+Result solveCarlier(vector<Job> jobs) {
+
+    Result initial_result = schrage(jobs);
+    Result best_result = initial_result;
+    
+    carlier(jobs, best_result);
+    
     return best_result;
 }

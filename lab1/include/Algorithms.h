@@ -10,6 +10,7 @@ Result schrage(std::vector<Job> jobs);
 Result preemptiveSchrage(std::vector<Job> jobs);
 Result ownAlgorithm(std::vector<Job> jobs);
 Result ownAlgorithm2(std::vector<Job> jobs);
-Result carlier(std::vector<Job> jobs, int UB = INT_MAX);
+void carlier(std::vector<Job>& jobs, Result& best_result);
+Result solveCarlier(std::vector<Job> jobs);
 
 #endif
