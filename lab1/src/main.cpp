@@ -16,12 +16,16 @@ int main(int argc, char *argv[])
     //printf("------------------------------\n");
     //printf("Input:\n");
     //print_Jobs(jobs);
+    long int sort_r_time = 0;
+    long int sort_q_time = 0;
     long int schrage_time = 0;
     long int preemptiveSchrage_time = 0;
     long int bruteForce_time = 0;
     long int carlier_time = 0;
     long int ownAlgorithm_time = 0;
     long int ownAlgorithm2_time = 0;
+    int sort_r_cmax = 0;
+    int sort_q_cmax = 0;
     int schrage_cmax = 0;
     int preemptiveSchrage_cmax = 0;
     int bruteForce_cmax = 0;
@@ -33,11 +37,39 @@ int main(int argc, char *argv[])
     {
         //printf("------------------------------\n");
 
-        //printf("Schrage:\n");
+        //printf("Sort r:\n");
         auto start = std::chrono::high_resolution_clock::now();
-        Result schrage_result = schrage(jobs);
+        Result sort_r_result = sort_r(jobs);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+        //printf("Time: %ldns\n", duration.count());
+        sort_r_time += duration.count();
+        sort_r_cmax = sort_r_result.C_max;
+        //printf("C_max: %d\n", sort_r_result.C_max);
+        //printf("Schedule:\n");
+        //print_Jobs(sort_r_result.permutation);
+
+        //printf("------------------------------\n");
+
+        //printf("Sort q:\n");
+        start = std::chrono::high_resolution_clock::now();
+        Result sort_q_result = sort_q(jobs);
+        end = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+        //printf("Time: %ldns\n", duration.count());
+        sort_q_time += duration.count();
+        sort_q_cmax = sort_q_result.C_max;
+        //printf("C_max: %d\n", sort_q_result.C_max);
+        //printf("Schedule:\n");
+        //print_Jobs(sort_q_result.permutation);
+
+        //printf("------------------------------\n");
+
+        //printf("Schrage:\n");
+        start = std::chrono::high_resolution_clock::now();
+        Result schrage_result = schrage(jobs);
+        end = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
         //printf("Time: %ldns\n", duration.count());
         schrage_time += duration.count();
         schrage_cmax = schrage_result.C_max;
@@ -130,6 +162,12 @@ int main(int argc, char *argv[])
     }
     printf("------------------------------\n");
     printf("--Results %s --\n", argv[1]);
+    printf("------------------------------\n");
+    printf("Time Sort R: %.3lfms\n", (double)sort_r_time/(1000000*count));
+    printf("C_max Sort R: %d\n", sort_r_cmax);
+    printf("------------------------------\n");
+    printf("Time Sort Q: %.3lfms\n", (double)sort_q_time/(1000000*count));
+    printf("C_max Sort Q: %d\n", sort_q_cmax);
     printf("------------------------------\n");
     printf("Time Schrage: %.3lfms\n", (double)schrage_time/(1000000*count));
     printf("C_max Schrage: %d\n", schrage_cmax);

@@ -5,6 +5,8 @@
 #include "Structs.h"
 #include <limits.h>
 
+Result sort_r(std::vector<Job> jobs);
+Result sort_q(std::vector<Job> jobs);
 std::pair<Result, Result> bruteForce(std::vector<Job> jobs);
 Result schrage(std::vector<Job> jobs);
 Result preemptiveSchrage(std::vector<Job> jobs);

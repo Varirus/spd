@@ -8,6 +8,24 @@
 
 using namespace std;
 
+Result sort_r(vector<Job> jobs){
+    Result best_result;
+    vector<Job>sorted_jobs = sort_by_r(jobs);
+    int cmax = compute_makespan_rp(sorted_jobs);
+    best_result.permutation = sorted_jobs;
+    best_result.C_max = cmax;
+    return best_result;
+}
+
+Result sort_q(vector<Job> jobs){
+    Result best_result;
+    vector<Job>sorted_jobs = sort_by_q(jobs);
+    int cmax = compute_makespan_rp(sorted_jobs);
+    best_result.permutation = sorted_jobs;
+    best_result.C_max = cmax;
+    return best_result;
+}
+
 std::pair<Result, Result> bruteForce(vector<Job> jobs)
 {
 
