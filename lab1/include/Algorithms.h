@@ -7,7 +7,7 @@
 
 Result sort_r(std::vector<Job> jobs);
 Result sort_q(std::vector<Job> jobs);
-std::pair<Result, Result> bruteForce(std::vector<Job> jobs);
+Result bruteForce(std::vector<Job> jobs);
 Result schrage(std::vector<Job> jobs);
 Result preemptiveSchrage(std::vector<Job> jobs);
 Result ownAlgorithm(std::vector<Job> jobs);

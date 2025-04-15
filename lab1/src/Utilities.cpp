@@ -73,42 +73,21 @@ vector<Job> sort_by_q(vector<Job> jobs)
     return jobs;
 }
 
-int compute_makespan_rp(vector<Job> jobs)
+int compute_makespan(vector<Job> jobs)
 {
     int C_prev = 0;
     int C_act = 0;
-    bool prime = true;
-    for (auto job : jobs)
+    for (int i = 0; i < jobs.size(); i++)
     {
-        if (prime)
-            C_prev = job.r + job.p;
+        if (i == 0)
+            C_prev = jobs.at(i).r + jobs.at(i).p;
         else
         {
-            C_act = max(C_prev, job.r) + job.p;
+            C_act = max(C_prev, jobs.at(i).r) + jobs.at(i).p;
             C_prev = C_act;
+            if(i == jobs.size() - 1)
+                C_act += jobs.at(i).q;
         }
-
-        prime = false;
-    }
-    return C_act;
-}
-
-int compute_makespan_rpq(vector<Job> jobs)
-{
-    int C_prev = 0;
-    int C_act = 0;
-    bool prime = true;
-    for (auto job : jobs)
-    {
-        if (prime)
-            C_prev = job.r + job.p + job.q;
-        else
-        {
-            C_act = max(C_prev, job.r) + job.p + job.q;
-            C_prev = C_act;
-        }
-
-        prime = false;
     }
     return C_act;
 }

@@ -11,7 +11,7 @@ using namespace std;
 Result sort_r(vector<Job> jobs){
     Result best_result;
     vector<Job>sorted_jobs = sort_by_r(jobs);
-    int cmax = compute_makespan_rp(sorted_jobs);
+    int cmax = compute_makespan(sorted_jobs);
     best_result.permutation = sorted_jobs;
     best_result.C_max = cmax;
     return best_result;
@@ -20,42 +20,31 @@ Result sort_r(vector<Job> jobs){
 Result sort_q(vector<Job> jobs){
     Result best_result;
     vector<Job>sorted_jobs = sort_by_q(jobs);
-    int cmax = compute_makespan_rp(sorted_jobs);
+    int cmax = compute_makespan(sorted_jobs);
     best_result.permutation = sorted_jobs;
     best_result.C_max = cmax;
     return best_result;
 }
 
-std::pair<Result, Result> bruteForce(vector<Job> jobs)
+Result bruteForce(vector<Job> jobs)
 {
 
-    Result best_result_rp;
-    Result best_result_rpq;
+    Result best_result;
 
-    best_result_rp.C_max = compute_makespan_rp(jobs) + 1;
-    best_result_rpq.C_max = compute_makespan_rpq(jobs) + 1;
+    best_result.C_max = compute_makespan(jobs) + 1;
     int x = 0;
     int facty = fact(jobs.size());
     for (int i = 0; i < facty; i++)
     {
         next_permutation(jobs.begin(), jobs.end(), [](const Job &a, const Job &b)
                          { return a.id > b.id; });
-        int value_rp = compute_makespan_rp(jobs);
-        if (value_rp < best_result_rp.C_max )
+        int value = compute_makespan(jobs);
+        if (value < best_result.C_max )
         {
-            best_result_rp.C_max  = value_rp;
-            best_result_rp.permutation= jobs;
-        }
-        int value_rpq = compute_makespan_rpq(jobs);
-        if (value_rpq < best_result_rpq.C_max)
-        {
-            best_result_rpq.C_max = value_rpq;
-            best_result_rpq.permutation = jobs;
+            best_result.C_max  = value;
+            best_result.permutation= jobs;
         }
     }
-    std::pair<Result, Result> best_result;
-    best_result.first = best_result_rp;
-    best_result.second = best_result_rpq;
     return best_result;
 }
 

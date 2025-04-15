@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
             //printf("------------------------------\n");
 
             start = std::chrono::high_resolution_clock::now();
-            std::pair<Result, Result> bruteForce_result = bruteForce(jobs);
+            Result bruteForce_result = bruteForce(jobs);
             end = std::chrono::high_resolution_clock::now();
             duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
             //printf("Brute Force RP:\n");
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
             //printf("Brute Force RPQ:\n");
             //printf("Time: %ldns\n", duration.count());
             bruteForce_time += duration.count();
-            bruteForce_cmax = bruteForce_result.first.C_max;
+            bruteForce_cmax = bruteForce_result.C_max;
             //printf("C_max: %d\n", bruteForce_result.second.C_max);
             //printf("Schedule:\n");
             //print_Jobs(bruteForce_result.second.permutation);
