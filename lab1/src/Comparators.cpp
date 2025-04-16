@@ -26,5 +26,5 @@ bool ComparePPlusQ::operator()(const Job& a, const Job& b) {
 }
 
 bool CompareMinusPPlusQ::operator()(const Job& a, const Job& b) {
-    return (-a.p + a.q) > (-b.p + b.q);
+    return (a.p + a.q) > (b.p + b.q);
 }

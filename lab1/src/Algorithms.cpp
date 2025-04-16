@@ -286,7 +286,7 @@ Result ownAlgorithm2(vector<Job> jobs)
                 hasJob = false;
             }
             // If there is avaliable job that is more profitable, swap job (push current job back to priorityJobQ)
-            else if (!priorityJobsQ.empty() && (priorityJobsQ.top().q - priorityJobsQ.top().p) > (current.q - current.p))
+            else if (!priorityJobsQ.empty() && (priorityJobsQ.top().q + priorityJobsQ.top().p) > (current.q + current.p))
             {
                 priorityJobsQ.push(current);
                 hasJob = false;
