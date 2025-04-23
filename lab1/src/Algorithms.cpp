@@ -190,7 +190,7 @@ Result ownAlgorithm(vector<Job> jobs) {
             bool preempt = false;
             if (!priorityJobsG.empty()) {
                 Job topJob = priorityJobsG.top();
-                if ((topJob.p + topJob.q) < (current.p + current.q)) {
+                if ((topJob.p + topJob.q) > (current.p + current.q)) {
                     preempt = true;
                 }
             }
@@ -232,7 +232,7 @@ Result ownAlgorithm2(vector<Job> jobs)
 {
     Result best_result;
     priority_queue<Job, vector<Job>, CompareR_Rev> priorityJobsR(jobs.begin(), jobs.end());
-    priority_queue<Job, vector<Job>, CompareMinusPPlusQ> priorityJobsQ;
+    priority_queue<Job, vector<Job>, ComparePPlusQ> priorityJobsQ;
     best_result.C_max = 0;
     int t = 0;
     Job current;
@@ -286,7 +286,7 @@ Result ownAlgorithm2(vector<Job> jobs)
                 hasJob = false;
             }
             // If there is avaliable job that is more profitable, swap job (push current job back to priorityJobQ)
-            else if (!priorityJobsQ.empty() && (priorityJobsQ.top().q + priorityJobsQ.top().p) > (current.q + current.p))
+            else if (!priorityJobsQ.empty() && (priorityJobsQ.top().q + priorityJobsQ.top().p) < (current.q + current.p))
             {
                 priorityJobsQ.push(current);
                 hasJob = false;

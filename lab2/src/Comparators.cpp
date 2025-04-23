@@ -7,5 +7,5 @@ bool CompareJobs::operator()(const Job &a, const Job &b)
 
 bool CompareMachines::operator()(const Machine &a, const Machine &b)
 {
-    return a.timeLeft > b.timeLeft;
+    return a.maxTime < b.maxTime;
 }

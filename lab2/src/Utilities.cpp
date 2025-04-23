@@ -63,12 +63,23 @@ pair<int, vector<Job>> readInput(int argc, char *argv[])
     return output;
 }
 
-/*vector<Job> sortJobs(vector<Job> jobs)
-{
-    sort(jobs.begin(), jobs.end(), CompareJobs());
-    return jobs;
+void printResult(Result result){
+    std::cout << "C_max: " << result.C_max << std::endl;
+    
+    for (size_t i = 0; i < result.perm.size(); i++)
+    {
+        std::cout << "Machine " << i << ": ";
+        for (size_t j = 0; j < result.perm.at(i).jobs.size(); j++)
+        {
+            std::cout << result.perm.at(i).jobs.at(j).p << " ";
+        }
+        
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 }
 
+/*
 int compute_cmax(vector<Job> jobs)
 {
     int C_prev = 0;
@@ -87,24 +98,4 @@ int compute_cmax(vector<Job> jobs)
         prime = false;
     }
     return C_act;
-}
-
-
-void print_Jobs(vector<Job> jobs)
-{
-    printf("id r p q\n");
-    for (auto job : jobs)
-    {
-        printf("%d. %d %d %d\n", job.id, job.r, job.p, job.q);
-    }
-    printf("\n");
-}
-
-int fact(int n)
-{
-    if (n == 1)
-        return 1;
-    else
-        return n * fact(n - 1);
-}
-*/
+}*/

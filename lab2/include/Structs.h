@@ -11,12 +11,12 @@ struct Job
 struct Machine
 {
     int id;
-    int timeLeft;
+    int maxTime;
     std::vector<Job> jobs;
 
     bool operator<(const Machine& other) const {
-        if (timeLeft != other.timeLeft)
-            return timeLeft < other.timeLeft;
+        if (maxTime != other.maxTime)
+            return maxTime < other.maxTime;
         return id < other.id;
     }
 };
