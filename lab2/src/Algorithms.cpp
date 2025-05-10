@@ -185,7 +185,6 @@ Result solveP3Cmax_PD(std::vector<Job> original_jobs)
 
     int s1 = best_s1, s2 = best_s2;
 
-    // Odtwarzanie przydziału zadań do maszyn
     for (int j = n; j >= 1; --j)
     {
         int p = jobs[j - 1].p;
@@ -262,16 +261,13 @@ Result solveP3Cmax_PZ(std::vector<Job> original_jobs) {
     int bestCmax = INT_MAX;
     std::vector<Machine> bestMachines(3);
 
-    // Generate all combinations (a, b, c) with a + b + c = n and a <= b <= c
     for (int a = 0; a <= n; ++a) {
         for (int b = a; b <= n - a; ++b) {
             int c = n - a - b;
             if (b > c) continue;
 
-            // All valid patterns (a <= b <= c)
             std::vector<int> counts = {a, b, c};
 
-            // Generate all possible assignments of n jobs split into groups of size a, b, c
             std::vector<int> assignment(n);
             std::fill(assignment.begin(), assignment.begin() + a, 0);
             std::fill(assignment.begin() + a, assignment.begin() + a + b, 1);
@@ -305,14 +301,11 @@ Result solveP3Cmax_PZ(std::vector<Job> original_jobs) {
     return result;
 }
 
-
-
-Result solveP2Cmax_PTAS(std::vector<Job> original_jobs, double epsilon)
+Result solveP2Cmax_PTAS(std::vector<Job> original_jobs, int k)
 {
     int n = original_jobs.size();
-    int k = std::min((int)std::ceil(1.0 / epsilon), n);
+    k = std::min(k, n);
 
-    // Posortuj po czasie przetwarzania malejąco
     std::vector<Job> jobs = original_jobs;
     std::sort(jobs.begin(), jobs.end(), [](const Job &a, const Job &b) {
         return a.p > b.p;
@@ -324,37 +317,35 @@ Result solveP2Cmax_PTAS(std::vector<Job> original_jobs, double epsilon)
     int bestCmax = INT_MAX;
     std::vector<Job> bestM1, bestM2;
 
-    // Przejdź przez wszystkie możliwe przydziały k największych zadań
     for (int mask = 0; mask < (1 << k); ++mask)
     {
-        std::vector<Job> m1_jobs, m2_jobs;
+        std::vector<Job> m1, m2;
         int sum1 = 0, sum2 = 0;
 
         for (int i = 0; i < k; ++i)
         {
             if (mask & (1 << i))
             {
-                m1_jobs.push_back(topK[i]);
+                m1.push_back(topK[i]);
                 sum1 += topK[i].p;
             }
             else
             {
-                m2_jobs.push_back(topK[i]);
+                m2.push_back(topK[i]);
                 sum2 += topK[i].p;
             }
         }
 
-        // Zachłannie przydziel pozostałe zadania
-        for (const Job &job : rest)
+        for (const auto &job : rest)
         {
             if (sum1 <= sum2)
             {
-                m1_jobs.push_back(job);
+                m1.push_back(job);
                 sum1 += job.p;
             }
             else
             {
-                m2_jobs.push_back(job);
+                m2.push_back(job);
                 sum2 += job.p;
             }
         }
@@ -363,32 +354,181 @@ Result solveP2Cmax_PTAS(std::vector<Job> original_jobs, double epsilon)
         if (Cmax < bestCmax)
         {
             bestCmax = Cmax;
-            bestM1 = m1_jobs;
-            bestM2 = m2_jobs;
+            bestM1 = m1;
+            bestM2 = m2;
         }
     }
 
-    // Stwórz wynik
-    Machine m1, m2;
-    m1.id = 0;
-    m2.id = 1;
-    m1.maxTime = m2.maxTime = 0;
+    Machine m1 = {0, 0, bestM1}, m2 = {1, 0, bestM2};
+    for (const auto &job : bestM1) m1.maxTime += job.p;
+    for (const auto &job : bestM2) m2.maxTime += job.p;
 
-    for (const auto &job : bestM1)
-    {
-        m1.jobs.push_back(job);
-        m1.maxTime += job.p;
+    return {{m1, m2}, bestCmax};
+}
+
+Result solveP2Cmax_FPTAS(std::vector<Job> original_jobs, int k) {
+    int n = original_jobs.size();
+    k = std::min(k, n);
+
+    std::sort(original_jobs.begin(), original_jobs.end(), [](const Job& a, const Job& b) {
+        return a.p > b.p;
+    });
+
+    std::vector<Job> topK(original_jobs.begin(), original_jobs.begin() + k);
+    std::vector<Job> rest(original_jobs.begin() + k, original_jobs.end());
+
+    int bestCmax = INT_MAX;
+    std::vector<Job> bestM1, bestM2;
+
+    int S_rest = 0;
+    for (const auto& job : rest) {
+        S_rest += job.p;
     }
 
-    for (const auto &job : bestM2)
-    {
-        m2.jobs.push_back(job);
-        m2.maxTime += job.p;
+    for (int mask = 0; mask < (1 << k); ++mask) {
+        std::vector<Job> m1, m2;
+        int sum1 = 0, sum2 = 0;
+
+        for (int i = 0; i < k; ++i) {
+            if (mask & (1 << i)) {
+                m1.push_back(topK[i]);
+                sum1 += topK[i].p;
+            } else {
+                m2.push_back(topK[i]);
+                sum2 += topK[i].p;
+            }
+        }
+
+        if (!rest.empty()) {
+            double epsilon = 1.0 / k;
+            int m = rest.size();
+            double K_val = (epsilon * S_rest) / (2.0 * m);
+            K_val = std::max(K_val, 1.0);
+
+            std::vector<Job> scaled = rest;
+            for (auto& job : scaled) {
+                job.p = static_cast<int>(job.p / K_val);
+            }
+
+            int total_scaled = 0;
+            for (const auto& job : scaled) {
+                total_scaled += job.p;
+            }
+
+            std::vector<bool> dp(total_scaled + 1, false);
+            std::vector<int> parent(total_scaled + 1, -1);
+            dp[0] = true;
+
+            for (size_t i = 0; i < scaled.size(); ++i) {
+                int p = scaled[i].p;
+                for (int j = total_scaled; j >= p; --j) {
+                    if (dp[j - p] && !dp[j]) {
+                        dp[j] = true;
+                        parent[j] = i;
+                    }
+                }
+            }
+
+            int target = total_scaled / 2;
+            while (target >= 0 && !dp[target]) {
+                --target;
+            }
+
+            std::vector<bool> onM1(rest.size(), false);
+            int current = target;
+            while (current > 0) {
+                int job_idx = parent[current];
+                if (job_idx == -1) break;
+                onM1[job_idx] = true;
+                current -= scaled[job_idx].p;
+            }
+
+            for (size_t i = 0; i < rest.size(); ++i) {
+                if (onM1[i]) {
+                    m1.push_back(rest[i]);
+                    sum1 += rest[i].p;
+                } else {
+                    m2.push_back(rest[i]);
+                    sum2 += rest[i].p;
+                }
+            }
+        }
+
+        int currentCmax = std::max(sum1, sum2);
+        if (currentCmax < bestCmax) {
+            bestCmax = currentCmax;
+            bestM1 = m1;
+            bestM2 = m2;
+        }
     }
 
-    Result result;
-    result.perm.push_back(m1);
-    result.perm.push_back(m2);
-    result.C_max = bestCmax;
-    return result;
+    Machine m1 = {0, 0, bestM1}, m2 = {1, 0, bestM2};
+    for (const auto &job : bestM1) m1.maxTime += job.p;
+    for (const auto &job : bestM2) m2.maxTime += job.p;
+
+    return {{m1, m2}, bestCmax};
+}
+
+Result solveP3Cmax_PTAS(std::vector<Job> original_jobs, int k) {
+    int n = original_jobs.size();
+    k = std::min(k, n);
+
+    std::vector<Job> jobs = original_jobs;
+    std::sort(jobs.begin(), jobs.end(), [](const Job &a, const Job &b) {
+        return a.p > b.p;
+    });
+
+    std::vector<Job> topK(jobs.begin(), jobs.begin() + k);
+    std::vector<Job> rest(jobs.begin() + k, jobs.end());
+
+    int bestCmax = INT_MAX;
+    std::vector<Job> bestM1, bestM2, bestM3;
+
+    for (int mask = 0; mask < (pow(3, k)); ++mask) { 
+        std::vector<Job> m1, m2, m3;
+        int sum1 = 0, sum2 = 0, sum3 = 0;
+
+        for (int i = 0; i < k; ++i) {
+            int machine = (mask / static_cast<int>(pow(3, i))) % 3;
+            if (machine == 0) {
+                m1.push_back(topK[i]);
+                sum1 += topK[i].p;
+            } else if (machine == 1) {
+                m2.push_back(topK[i]);
+                sum2 += topK[i].p;
+            } else {
+                m3.push_back(topK[i]);
+                sum3 += topK[i].p;
+            }
+        }
+        
+        for (const auto &job : rest) {
+            if (sum1 <= sum2 && sum1 <= sum3) {
+                m1.push_back(job);
+                sum1 += job.p;
+            } else if (sum2 <= sum1 && sum2 <= sum3) {
+                m2.push_back(job);
+                sum2 += job.p;
+            } else {
+                m3.push_back(job);
+                sum3 += job.p;
+            }
+        }
+
+        int Cmax = std::max({sum1, sum2, sum3});
+        if (Cmax < bestCmax) {
+            bestCmax = Cmax;
+            bestM1 = m1;
+            bestM2 = m2;
+            bestM3 = m3;
+        }
+    }
+
+    // Create the result with three machines
+    Machine m1 = {0, 0, bestM1}, m2 = {1, 0, bestM2}, m3 = {2, 0, bestM3};
+    for (const auto &job : bestM1) m1.maxTime += job.p;
+    for (const auto &job : bestM2) m2.maxTime += job.p;
+    for (const auto &job : bestM3) m3.maxTime += job.p;
+
+    return {{m1, m2, m3}, bestCmax};
 }
