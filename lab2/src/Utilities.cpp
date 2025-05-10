@@ -6,10 +6,12 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
+#include <cmath>
+#include <string>
 
 using namespace std;
 
-pair<int, vector<Job>> readInput(int argc, char *argv[])
+vector<Job> readInput(int argc, char *argv[])
 {
     if (argc < 2)
     {
@@ -43,9 +45,8 @@ pair<int, vector<Job>> readInput(int argc, char *argv[])
     // Get amount of record
     getline(*input, line);
     stringstream ssa(line);
-    int m;
     int n;
-    ssa >> m >> n;
+    ssa >> n;
     int id = 0;
     getline(*input, line);
     stringstream ss(line);
@@ -57,10 +58,7 @@ pair<int, vector<Job>> readInput(int argc, char *argv[])
         id++;
         jobs.push_back({id, p});
     }
-    pair<int, vector<Job>> output;
-    output.first = m;
-    output.second = jobs;
-    return output;
+    return jobs;
 }
 
 void printResult(Result result){
@@ -78,24 +76,3 @@ void printResult(Result result){
     }
     std::cout << std::endl;
 }
-
-/*
-int compute_cmax(vector<Job> jobs)
-{
-    int C_prev = 0;
-    int C_act = 0;
-    bool prime = true;
-    for (auto job : jobs)
-    {
-        if (prime)
-            C_prev = job.r + job.p;
-        else
-        {
-            C_act = max(C_prev, job.r) + job.p;
-            C_prev = C_act;
-        }
-
-        prime = false;
-    }
-    return C_act;
-}*/

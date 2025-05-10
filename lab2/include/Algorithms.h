@@ -7,9 +7,9 @@
 
 Result lsa(int m, std::vector<Job> original_jobs);
 Result lpt(int m, std::vector<Job> original_jobs);
-Result solveP2Cmax(std::vector<Job> original_jobs);
-void branchAndBound(int jobIndex, const std::vector<Job> &jobs, int sumM1, int sumM2,
-    std::vector<Job> &jobsM1, std::vector<Job> &jobsM2, int &bestCmax,
-    std::vector<Job> &bestJobsM1, std::vector<Job> &bestJobsM2);
-Result solveP2Cmax_BnB(std::vector<Job> original_jobs);
+Result solveP2Cmax_PD(std::vector<Job> original_jobs);
+Result solveP3Cmax_PD(std::vector<Job> original_jobs);
+Result solveP2Cmax_PZ(std::vector<Job> original_jobs);
+Result solveP3Cmax_PZ(std::vector<Job> original_jobs);
+Result solveP2Cmax_PTAS(std::vector<Job> original_jobs, double epsilon);
 #endif
