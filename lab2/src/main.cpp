@@ -26,11 +26,11 @@ int main(int argc, char *argv[])
     printResult(result_pdP2);
 
     std::cout << std::endl << "PTAS P2 K = 25" << std::endl;
-    Result result_PTASP2 = solveP2Cmax_PTAS(jobs, 25);
+    Result result_PTASP2 = solveP2Cmax_PTAS(jobs, 2);
     printResult(result_PTASP2);
 
     std::cout << std::endl << "FPTAS P2 K = 4" << std::endl;
-    Result result_FPTASP2 = solveP2Cmax_FPTAS(jobs, 4);
+    Result result_FPTASP2 = solveP2Cmax_FPTAS(jobs, 2);
     printResult(result_FPTASP2);
 
     std::cout << std::endl << "Przeglad zupelny P2" << std::endl;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     printResult(result_pdP3);
 
     std::cout << std::endl << "PTAS P3  K = 25" << std::endl;
-    Result result_PTASP3 = solveP3Cmax_PTAS(jobs, 25);
+    Result result_PTASP3 = solveP3Cmax_PTAS(jobs, 1);
     printResult(result_PTASP3);
 
 }
