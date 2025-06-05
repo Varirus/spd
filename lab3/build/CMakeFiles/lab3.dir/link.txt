@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/lab3.dir/src/main.cpp.o CMakeFiles/lab3.dir/src/Structs.cpp.o CMakeFiles/lab3.dir/src/Algorithms.cpp.o CMakeFiles/lab3.dir/src/Utilities.cpp.o -o lab3 

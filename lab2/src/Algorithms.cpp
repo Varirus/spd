@@ -7,9 +7,6 @@
 #include <cstdio>
 #include <iostream>
 #include <cmath>
-#include <unordered_map>
-
-
 
 
 Result lsa(int m, std::vector<Job> original_jobs)
@@ -65,6 +62,47 @@ Result lpt(int m, std::vector<Job> original_jobs)
     return {machines, C_max};
 }
 
+Result solveP2Cmax_PZ(std::vector<Job> original_jobs)
+{
+    std::vector<Job> jobs = original_jobs;
+    int n = jobs.size();
+    int bestCmax = INT_MAX;
+    std::vector<Machine> bestMachines(2);
+    // Tylko pierwsze 2^n / 2 zadan bo potem powtorzenia
+    int total = 1 << n;
+    int limit = total / 2;
+
+    for (int i = 0; i < limit; ++i) {
+        std::vector<Machine> machines(2);
+        for (int x = 0; x < 2; x++)
+        {
+            machines[x].id = x;
+        }
+
+        // Ciag binarny po ktorym wkladamy dane zadania na maszyny
+        std::vector<int> assignment(n);
+        for (int j = 0; j < n; ++j) {
+            assignment[j] = (i >> j) & 1;
+        }
+
+        for (int k = 0; k < n; ++k) {
+            machines.at(assignment[k]).jobs.push_back(jobs[k]);
+            machines.at(assignment[k]).maxTime += jobs[k].p;
+        }
+        int Cmax = std::max(machines.at(0).maxTime, machines.at(1).maxTime);
+        if(Cmax < bestCmax){
+            bestCmax = Cmax;
+            bestMachines.at(0) = machines.at(0);
+            bestMachines.at(1) = machines.at(1);
+        }
+    }
+    Result result;
+    result.perm.push_back(bestMachines.at(0));
+    result.perm.push_back(bestMachines.at(1));
+    result.C_max = bestCmax;
+    return result;
+}
+
 Result solveP2Cmax_PD(std::vector<Job> original_jobs)
 {
     std::vector<Job> jobs = original_jobs;
@@ -76,6 +114,7 @@ Result solveP2Cmax_PD(std::vector<Job> original_jobs)
     std::vector<std::vector<bool>> dp(jobs.size() + 1, std::vector<bool>(target + 1, false));
     dp[0][0] = true;
 
+    // Wypelenienie tablicy programowanie dynammiczny
     for (int j = 1; j <= (int)jobs.size(); ++j)
     {
         int p = jobs[j - 1].p;
@@ -88,6 +127,7 @@ Result solveP2Cmax_PD(std::vector<Job> original_jobs)
         }
     }
 
+    // Znajdywanie najlepszego k
     int best_sum = 0;
     for (int k = target; k >= 0; --k)
     {
@@ -105,6 +145,7 @@ Result solveP2Cmax_PD(std::vector<Job> original_jobs)
     m2.maxTime = 0;
     int remaining_sum = best_sum;
 
+    // Backtracking
     for (int j = jobs.size(); j >= 1; --j)
     {
         if (remaining_sum >= jobs[j - 1].p && dp[j - 1][remaining_sum - jobs[j - 1].p])
@@ -219,44 +260,6 @@ Result solveP3Cmax_PD(std::vector<Job> original_jobs)
     return result;
 }
 
-Result solveP2Cmax_PZ(std::vector<Job> original_jobs)
-{
-    std::vector<Job> jobs = original_jobs;
-    int n = jobs.size();
-    int bestCmax = INT_MAX;
-    std::vector<Machine> bestMachines(2);
-    int total = 1 << n;
-    int limit = total / 2;
-
-    for (int i = 0; i < limit; ++i) {
-        std::vector<Machine> machines(2);
-        for (int x = 0; x < 2; x++)
-        {
-            machines[x].id = x;
-        }
-
-        std::vector<int> assignment(n);
-        for (int j = 0; j < n; ++j) {
-            assignment[j] = (i >> j) & 1;
-        }
-
-        for (int k = 0; k < n; ++k) {
-            machines.at(assignment[k]).jobs.push_back(jobs[k]);
-            machines.at(assignment[k]).maxTime += jobs[k].p;
-        }
-        int Cmax = std::max(machines.at(0).maxTime, machines.at(1).maxTime);
-        if(Cmax < bestCmax){
-            bestCmax = Cmax;
-            bestMachines.at(0) = machines.at(0);
-            bestMachines.at(1) = machines.at(1);
-        }
-    }
-    Result result;
-    result.perm.push_back(bestMachines.at(0));
-    result.perm.push_back(bestMachines.at(1));
-    result.C_max = bestCmax;
-    return result;
-}
 
 Result solveP3Cmax_PZ(std::vector<Job> original_jobs) {
     std::vector<Job> jobs = original_jobs;

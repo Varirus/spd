@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/home/varirus/spd/lab3/build",
+  "command": "/usr/bin/c++  -I/home/varirus/spd/lab3/include -g -std=gnu++17 -Wall -Wextra -pedantic -Werror=return-type -Werror=parentheses -Werror=vla -Werror=array-bounds -Wcast-qual -Wmaybe-uninitialized -o CMakeFiles/lab3.dir/src/main.cpp.o -c /home/varirus/spd/lab3/src/main.cpp",
+  "file": "/home/varirus/spd/lab3/src/main.cpp",
+  "output": "CMakeFiles/lab3.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/varirus/spd/lab3/build",
+  "command": "/usr/bin/c++  -I/home/varirus/spd/lab3/include -g -std=gnu++17 -Wall -Wextra -pedantic -Werror=return-type -Werror=parentheses -Werror=vla -Werror=array-bounds -Wcast-qual -Wmaybe-uninitialized -o CMakeFiles/lab3.dir/src/Structs.cpp.o -c /home/varirus/spd/lab3/src/Structs.cpp",
+  "file": "/home/varirus/spd/lab3/src/Structs.cpp",
+  "output": "CMakeFiles/lab3.dir/src/Structs.cpp.o"
+},
+{
+  "directory": "/home/varirus/spd/lab3/build",
+  "command": "/usr/bin/c++  -I/home/varirus/spd/lab3/include -g -std=gnu++17 -Wall -Wextra -pedantic -Werror=return-type -Werror=parentheses -Werror=vla -Werror=array-bounds -Wcast-qual -Wmaybe-uninitialized -o CMakeFiles/lab3.dir/src/Algorithms.cpp.o -c /home/varirus/spd/lab3/src/Algorithms.cpp",
+  "file": "/home/varirus/spd/lab3/src/Algorithms.cpp",
+  "output": "CMakeFiles/lab3.dir/src/Algorithms.cpp.o"
+},
+{
+  "directory": "/home/varirus/spd/lab3/build",
+  "command": "/usr/bin/c++  -I/home/varirus/spd/lab3/include -g -std=gnu++17 -Wall -Wextra -pedantic -Werror=return-type -Werror=parentheses -Werror=vla -Werror=array-bounds -Wcast-qual -Wmaybe-uninitialized -o CMakeFiles/lab3.dir/src/Utilities.cpp.o -c /home/varirus/spd/lab3/src/Utilities.cpp",
+  "file": "/home/varirus/spd/lab3/src/Utilities.cpp",
+  "output": "CMakeFiles/lab3.dir/src/Utilities.cpp.o"
+}
+]
