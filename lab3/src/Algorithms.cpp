@@ -6,6 +6,8 @@
 #include <climits>
 #include <random>
 #include <functional>
+#include <cstdlib>
+#include <ctime>
 #include "Structs.h"
 #include "Utilities.h"
 
@@ -29,7 +31,7 @@ ScheduleResult bruteForce(const std::vector<Job>& jobs, int m) {
 }
 
 ScheduleResult NEH(const std::vector<Job>& jobs, int m) {
-    // 1. LICZENIE SUMY CZASU WYKONANIA ZADANIA 
+    // 1. OBLICZENIE SUM CZASU WYKONANIA ZADANIA 
     int n = jobs.size();
     std::vector<std::pair<int, int>> jobSum(n);
     for (int i = 0; i < n; ++i) {
@@ -38,10 +40,10 @@ ScheduleResult NEH(const std::vector<Job>& jobs, int m) {
     }
     // 2. SORTOWANIE ZADAŃ MALEJĄCO
     std::sort(jobSum.rbegin(), jobSum.rend());
-
+    // 3. DODANIE PIERWSZEGO ZADANIA
     std::vector<int> partialSeq;
     partialSeq.push_back(jobSum[0].second);
-    // 3. WSTAWIANIE ZADAŃ DLA MINIMALNEGO C_MAX
+    // 4. WSTAWIANIE ZADAŃ DLA MINIMALNEGO C_MAX
     for (int k = 1; k < n; ++k) {
         int jobId = jobSum[k].second;
         int bestCmax = -1;
@@ -66,6 +68,7 @@ ScheduleResult johnson(const std::vector<Job>& jobs) {
     int n = jobs.size();
     std::vector<int> left, right;
 
+    // 1. PRZYDZIAL ZADAN DO ODPOWIEDNICH PODGRUP
     for (int i = 0; i < n; ++i) {
         int t1 = jobs[i].times[0];
         int t2 = jobs[i].times[1];
@@ -74,19 +77,19 @@ ScheduleResult johnson(const std::vector<Job>& jobs) {
         else
             right.push_back(i);
     }
-
+    // 2. SORTOWANIE 1. GRUPY ROSNĄCO
     std::sort(left.begin(), left.end(), [&](int a, int b) {
         return jobs[a].times[0] < jobs[b].times[0];
     });
-
+    // 3. SORTOWANIE 2. GRUPY MALEJĄCO
     std::sort(right.begin(), right.end(), [&](int a, int b) {
         return jobs[a].times[1] > jobs[b].times[1];
     });
-
+    // 4. STWORZENIE PERMUTACJI
     std::vector<int> perm;
     perm.insert(perm.end(), left.begin(), left.end());
     perm.insert(perm.end(), right.begin(), right.end());
-
+    // 5. STWORZENIE WEKTORA JOB W PERMUTACJI
     std::vector<Job> reducedJobs(n);
     for (int i = 0; i < n; ++i)
         reducedJobs[i].times = {jobs[i].times[0], jobs[i].times[1]};
@@ -96,16 +99,19 @@ ScheduleResult johnson(const std::vector<Job>& jobs) {
 }
 
 ScheduleResult FNEH(const std::vector<Job>& jobs, int m) {
+    // 1. OBLICZENIE SUM CZASU WYKONANIA ZADANIA 
     int n = jobs.size();
     std::vector<std::pair<int, int>> jobSum(n);
-    for (int i = 0; i < n; ++i)
-        jobSum[i] = { std::accumulate(jobs[i].times.begin(), jobs[i].times.end(), 0), i };
-    
+    for (int i = 0; i < n; ++i) {
+        int sum = std::accumulate(jobs[i].times.begin(), jobs[i].times.end(), 0);
+        jobSum[i] = {sum, i};
+    }
+    // 2. SORTOWANIE ZADAŃ MALEJĄCO
     std::sort(jobSum.rbegin(), jobSum.rend());
-
+    // 3. DODANIE PIERWSZEGO ZADANIA
     std::vector<int> sequence;
     sequence.push_back(jobSum[0].second);
-
+    // 4. WSTAWIANIE ZADAŃ DLA MINIMALNEGO C_MAX
     std::vector<int> completionTimes(m, 0);
 
     for (int k = 1; k < n; ++k) {
@@ -116,7 +122,7 @@ ScheduleResult FNEH(const std::vector<Job>& jobs, int m) {
         for (int pos = 0; pos <= (int)sequence.size(); ++pos) {
             std::vector<int> tempSeq = sequence;
             tempSeq.insert(tempSeq.begin() + pos, jobId);
-
+            // RÓZNICA OD NEH, BRAK OLBICZENIA PEŁNEGO C_CMAX
             std::vector<int> cTimes(m, 0);
             for (int idx = 0; idx < (int)tempSeq.size(); ++idx) {
                 int jId = tempSeq[idx];
@@ -139,17 +145,37 @@ ScheduleResult FNEH(const std::vector<Job>& jobs, int m) {
     return ScheduleResult{sequence, finalCmax};
 }
 
+int lowerBound(const std::vector<Job>& jobs, const std::vector<int>& currentPerm, const std::vector<bool>& used, int m) {
+    int n = jobs.size();
+
+    // 1. OBLICZ PARTIALCMAX
+    int partialCmax = 0;
+    if (!currentPerm.empty()) {
+        partialCmax = calculateCmax(jobs, currentPerm, m);
+    }
+
+    // 2. SUMA MIN CZASÓW POZOSTAŁYCH ZADAŃ NA MASZYNIE
+    //    PIERWSZEJ I OSTATNIEJ
+    int sumMinFirst = 0, sumMinLast = 0;
+    for (int j = 0; j < n; ++j) {
+        if (!used[j]) {
+            sumMinFirst += jobs[j].times[0];
+            sumMinLast  += jobs[j].times[m-1];
+        }
+    }
+
+    // 3. LB TO MAX Z TYCH 3 OBLICZONYCH
+    return std::max({partialCmax, sumMinFirst, sumMinLast});
+}
+
 
 ScheduleResult branchAndBound(const std::vector<Job>& jobs, int m) {
     int n = jobs.size();
     std::vector<int> bestPerm;
     int bestCmax = INT_MAX;
-
     std::vector<int> currentPerm;
     std::vector<bool> used(n, false);
-
-    std::vector<std::vector<int>> completionTimes(m, std::vector<int>(n, 0));
-
+    // REKURENCYJNA METODA DRZEWA
     std::function<void(int)> bnb = [&](int depth) {
         if (depth == n) {
             int cmax = calculateCmax(jobs, currentPerm, m);
@@ -165,9 +191,9 @@ ScheduleResult branchAndBound(const std::vector<Job>& jobs, int m) {
                 used[i] = true;
                 currentPerm.push_back(i);
 
-                // Przycinanie: obliczamy C_max dla częściowej permutacji
-                int partialCmax = calculateCmax(jobs, currentPerm, m);
-                if (partialCmax < bestCmax) {
+                // ODICINANIE
+                int partialLB = lowerBound(jobs, currentPerm, used, m);
+                if (partialLB < bestCmax) {
                     bnb(depth + 1);
                 }
 
@@ -185,21 +211,19 @@ ScheduleResult tabuSearch(const std::vector<Job>& jobs, int m, int maxIter, int 
     int n = jobs.size();
     std::vector<int> currentPerm(n);
     std::iota(currentPerm.begin(), currentPerm.end(), 0);
-    
     int bestCmax = calculateCmax(jobs, currentPerm, m);
     std::vector<int> bestPerm = currentPerm;
-
     std::vector<std::vector<int>> tabuList(n, std::vector<int>(n, 0));
 
     int iter = 0;
-    std::mt19937 rng(std::random_device{}());
 
     while (iter < maxIter) {
-        int bestNeighborCmax = std::numeric_limits<int>::max();
+        int bestNeighborCmax = __INT_MAX__;
         int swap_i = -1, swap_j = -1;
 
         for (int i = 0; i < n - 1; ++i) {
             for (int j = i + 1; j < n; ++j) {
+                // JEŻELI TABU LIST NIE ZABRANIA TO WYKONUJEMY RUCH
                 if (tabuList[i][j] > iter) continue;
 
                 std::swap(currentPerm[i], currentPerm[j]);
@@ -212,7 +236,7 @@ ScheduleResult tabuSearch(const std::vector<Job>& jobs, int m, int maxIter, int 
                 std::swap(currentPerm[i], currentPerm[j]);
             }
         }
-
+        // JEŚLI ISTNIEJE ZAMIANA TO ZMIENIAMI I ZABRANIAMY RUCHU NA KOLEJNE ITERACJE
         if (swap_i == -1) break;
 
         std::swap(currentPerm[swap_i], currentPerm[swap_j]);
@@ -235,26 +259,25 @@ ScheduleResult simulatedAnnealing(const std::vector<Job>& jobs, int m, int maxIt
     int n = jobs.size();
     std::vector<int> currentPerm(n);
     std::iota(currentPerm.begin(), currentPerm.end(), 0);
-
     int currentCmax = calculateCmax(jobs, currentPerm, m);
     std::vector<int> bestPerm = currentPerm;
     int bestCmax = currentCmax;
 
-    std::mt19937 rng(std::random_device{}());
-    std::uniform_int_distribution<int> distIndex(0, n - 1);
-    std::uniform_real_distribution<double> distProb(0.0, 1.0);
+    std::srand(std::time(nullptr)); 
 
     double temp = startTemp;
 
     for (int iter = 0; iter < maxIter; ++iter) {
-        int i = distIndex(rng);
-        int j = distIndex(rng);
+        int i = std::rand() % n;
+        int j = std::rand() % n;
         if (i == j) continue;
 
         std::swap(currentPerm[i], currentPerm[j]);
         int newCmax = calculateCmax(jobs, currentPerm, m);
 
-        if (newCmax < currentCmax || distProb(rng) < std::exp((currentCmax - newCmax) / temp)) {
+        double prob = static_cast<double>(std::rand()) / RAND_MAX;
+        // WYOKNUJEMY RUCH JEŚLI DAJE LEPSZY REZULTAT LUB Z PEWNYM PRAWDOPODOBIEŃSTWWEM
+        if (newCmax < currentCmax || prob < std::exp((currentCmax - newCmax) / temp)) {
             currentCmax = newCmax;
             if (newCmax < bestCmax) {
                 bestCmax = newCmax;
@@ -263,9 +286,8 @@ ScheduleResult simulatedAnnealing(const std::vector<Job>& jobs, int m, int maxIt
         } else {
             std::swap(currentPerm[i], currentPerm[j]);
         }
-
+        // WYCHŁADZANIE
         temp *= coolingRate;
-        if (temp < 1e-8) temp = 1e-8;
     }
 
     return {bestPerm, bestCmax};

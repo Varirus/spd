@@ -98,6 +98,7 @@ CMakeFiles/lab3.dir/src/Algorithms.cpp.o: /home/varirus/spd/lab3/src/Algorithms.
   /usr/include/c++/13/cstdint \
   /usr/include/c++/13/cstdio \
   /usr/include/c++/13/cstdlib \
+  /usr/include/c++/13/ctime \
   /usr/include/c++/13/cwchar \
   /usr/include/c++/13/cwctype \
   /usr/include/c++/13/debug/assertions.h \
@@ -754,6 +755,8 @@ CMakeFiles/lab3.dir/src/main.cpp.o: /home/varirus/spd/lab3/src/main.cpp \
 
 /usr/include/x86_64-linux-gnu/sys/single_threaded.h:
 
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
 /usr/include/c++/13/pstl/glue_algorithm_defs.h:
 
 /usr/include/c++/13/pstl/execution_defs.h:
@@ -782,6 +785,10 @@ CMakeFiles/lab3.dir/src/main.cpp.o: /home/varirus/spd/lab3/src/main.cpp \
 
 /usr/include/c++/13/debug/assertions.h:
 
+/usr/include/c++/13/ctime:
+
+/usr/include/c++/13/deque:
+
 /usr/include/c++/13/cstdlib:
 
 /usr/include/c++/13/cstdint:
@@ -807,8 +814,6 @@ CMakeFiles/lab3.dir/src/main.cpp.o: /home/varirus/spd/lab3/src/main.cpp \
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
 
 /usr/include/c++/13/bits/vector.tcc:
-
-/usr/include/c++/13/deque:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
@@ -1277,5 +1282,3 @@ CMakeFiles/lab3.dir/src/main.cpp.o: /home/varirus/spd/lab3/src/main.cpp \
 /usr/include/c++/13/bits/node_handle.h:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
-
-/usr/include/x86_64-linux-gnu/sys/cdefs.h:

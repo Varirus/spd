@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
         std::cout << "\n\n";
     }
 
-    ScheduleResult TS_Result = tabuSearch(jobs, m, 1000, 10);
+    ScheduleResult TS_Result = tabuSearch(jobs, m, 100, 10);
     std::cout << "Tabu Search solution C_sum: " << calculateCsum(jobs, TS_Result.permutation, m) << "\n";
     std::cout << "Tabu Search solution C_max: " << TS_Result.C_max << "\nTabu Search Permutation:\n";
     for (int jobId : TS_Result.permutation)
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     }
     std::cout << "\n\n";
 
-    ScheduleResult SA_Result = simulatedAnnealing(jobs, m, 10000, 1000.0, 0.995);
+    ScheduleResult SA_Result = simulatedAnnealing(jobs, m, 1000, 135.0, 0.95);
     std::cout << "Simulated Annealing solution C_sum: " << calculateCsum(jobs, SA_Result.permutation, m) << "\n";
     std::cout << "Simulated Annealing solution C_max: " << SA_Result.C_max << "\nSimulated Annealing Permutation:\n";
     for (int jobId : SA_Result.permutation)
